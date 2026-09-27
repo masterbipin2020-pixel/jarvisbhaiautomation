@@ -1,0 +1,23 @@
+name: Build AURA APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+      - name: Build APK
+        run: gradle assembleDebug
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AURA-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
